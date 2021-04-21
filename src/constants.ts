@@ -19,7 +19,7 @@ export enum Rounding {
   ROUND_UP
 }
 
-export const FACTORY_ADDRESS = '0xF3f2883B2bcC1e5B63129a302165e696c7Eba9b8'
+export const FACTORY_ADDRESS = '0x5DA20d86E3721bfCfa6859774bdD8F570BF86b4f'
 
 export const INIT_CODE_HASH = '0xe242e798f6cee26a9cb0bbf24653bf066e5356ffeac160907fe2cc108e238617'
 
@@ -33,7 +33,7 @@ export const THREE = JSBI.BigInt(3)
 export const FIVE = JSBI.BigInt(5)
 export const TEN = JSBI.BigInt(10)
 export const _100 = JSBI.BigInt(100)
-export const _998 = JSBI.BigInt(998)
+export const _997 = JSBI.BigInt(997)
 export const _1000 = JSBI.BigInt(1000)
 
 export enum SolidityType {
