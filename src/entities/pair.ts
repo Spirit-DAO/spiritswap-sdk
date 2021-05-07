@@ -8,6 +8,7 @@ import { getCreate2Address } from '@ethersproject/address'
 import {
   BigintIsh,
   FACTORY_ADDRESS,
+  FACTORIES,
   INIT_CODE_HASH,
   MINIMUM_LIQUIDITY,
   ZERO,
@@ -22,6 +23,8 @@ import { InsufficientReservesError, InsufficientInputAmountError } from '../erro
 import { Token } from './token'
 
 let PAIR_ADDRESS_CACHE: { [token0Address: string]: { [token1Address: string]: string } } = {}
+
+let PAIR_ADDRESSES_CACHE: { [token0Address: string]: { [token1Address: string]: string[] } } = {}
 
 export class Pair {
   public readonly liquidityToken: Token
@@ -45,6 +48,26 @@ export class Pair {
     }
 
     return PAIR_ADDRESS_CACHE[tokens[0].address][tokens[1].address]
+  }
+
+  public static getAddresses(tokenA: Token, tokenB: Token): string[] {
+    const tokens = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
+
+    if (PAIR_ADDRESSES_CACHE?.[tokens[0].address]?.[tokens[1].address] === undefined) {
+      PAIR_ADDRESSES_CACHE = {
+        ...PAIR_ADDRESSES_CACHE,
+        [tokens[0].address]: {
+          ...PAIR_ADDRESSES_CACHE?.[tokens[0].address],
+          [tokens[1].address]: FACTORIES.map(f => getCreate2Address(
+            f.address,
+            keccak256(['bytes'], [pack(['address', 'address'], [tokens[0].address, tokens[1].address])]),
+            f.init_code_hash
+          ))
+        }
+      }
+    }
+
+    return PAIR_ADDRESSES_CACHE[tokens[0].address][tokens[1].address]
   }
 
   public constructor(tokenAmountA: TokenAmount, tokenAmountB: TokenAmount) {

@@ -21,6 +21,17 @@ export enum Rounding {
 
 export const FACTORY_ADDRESS = '0xEF45d134b73241eDa7703fa787148D9C9F4950b0'
 
+export const FACTORIES = [
+  {
+    address: '0xEF45d134b73241eDa7703fa787148D9C9F4950b0',
+    init_code_hash: '0xe242e798f6cee26a9cb0bbf24653bf066e5356ffeac160907fe2cc108e238617',
+  },
+  {
+    address: '0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3',
+    init_code_hash: '0xcdf2deca40a0bd56de8e3ce5c7df6727e5b1bf2ac96f283fa9c4b3e6b42ea9d2',
+  },
+]
+
 export const INIT_CODE_HASH = '0xe242e798f6cee26a9cb0bbf24653bf066e5356ffeac160907fe2cc108e238617'
 
 export const MINIMUM_LIQUIDITY = JSBI.BigInt(1000)
