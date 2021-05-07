@@ -58,11 +58,13 @@ export class Pair {
         ...PAIR_ADDRESSES_CACHE,
         [tokens[0].address]: {
           ...PAIR_ADDRESSES_CACHE?.[tokens[0].address],
-          [tokens[1].address]: FACTORIES.map(f => getCreate2Address(
-            f.address,
-            keccak256(['bytes'], [pack(['address', 'address'], [tokens[0].address, tokens[1].address])]),
-            f.init_code_hash
-          ))
+          [tokens[1].address]: FACTORIES.map(f =>
+            getCreate2Address(
+              f.address,
+              keccak256(['bytes'], [pack(['address', 'address'], [tokens[0].address, tokens[1].address])]),
+              f.init_code_hash
+            )
+          )
         }
       }
     }
