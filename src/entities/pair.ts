@@ -9,6 +9,10 @@ import {
   BigintIsh,
   FACTORY_ADDRESS,
   INIT_CODE_HASH,
+  SPOOKY_FACTORY_ADDRESS,
+  SPOOKY_INIT_CODE_HASH,
+  SUSHI_FACTORY_ADDRESS,
+  SUSHI_INIT_CODE_HASH,
   MINIMUM_LIQUIDITY,
   ZERO,
   ONE,
@@ -22,6 +26,8 @@ import { InsufficientReservesError, InsufficientInputAmountError } from '../erro
 import { Token } from './token'
 
 let PAIR_ADDRESS_CACHE: { [token0Address: string]: { [token1Address: string]: string } } = {}
+let SPOOKY_PAIR_ADDRESS_CACHE: { [token0Address: string]: { [token1Address: string]: string } } = {}
+let SUSHI_PAIR_ADDRESS_CACHE: { [token0Address: string]: { [token1Address: string]: string } } = {}
 
 export class Pair {
   public readonly liquidityToken: Token
@@ -45,6 +51,46 @@ export class Pair {
     }
 
     return PAIR_ADDRESS_CACHE[tokens[0].address][tokens[1].address]
+  }
+
+  public static getSpookyAddress(tokenA: Token, tokenB: Token): string {
+    const tokens = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
+
+    if (SPOOKY_PAIR_ADDRESS_CACHE?.[tokens[0].address]?.[tokens[1].address] === undefined) {
+      SPOOKY_PAIR_ADDRESS_CACHE = {
+        ...SPOOKY_PAIR_ADDRESS_CACHE,
+        [tokens[0].address]: {
+          ...SPOOKY_PAIR_ADDRESS_CACHE?.[tokens[0].address],
+          [tokens[1].address]: getCreate2Address(
+            SPOOKY_FACTORY_ADDRESS,
+            keccak256(['bytes'], [pack(['address', 'address'], [tokens[0].address, tokens[1].address])]),
+            SPOOKY_INIT_CODE_HASH
+          )
+        }
+      }
+    }
+
+    return SPOOKY_PAIR_ADDRESS_CACHE[tokens[0].address][tokens[1].address]
+  }
+
+  public static getSushiAddress(tokenA: Token, tokenB: Token): string {
+    const tokens = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
+
+    if (SUSHI_PAIR_ADDRESS_CACHE?.[tokens[0].address]?.[tokens[1].address] === undefined) {
+      SUSHI_PAIR_ADDRESS_CACHE = {
+        ...SUSHI_PAIR_ADDRESS_CACHE,
+        [tokens[0].address]: {
+          ...SUSHI_PAIR_ADDRESS_CACHE?.[tokens[0].address],
+          [tokens[1].address]: getCreate2Address(
+            SUSHI_FACTORY_ADDRESS,
+            keccak256(['bytes'], [pack(['address', 'address'], [tokens[0].address, tokens[1].address])]),
+            SUSHI_INIT_CODE_HASH
+          )
+        }
+      }
+    }
+
+    return SUSHI_PAIR_ADDRESS_CACHE[tokens[0].address][tokens[1].address]
   }
 
   public constructor(tokenAmountA: TokenAmount, tokenAmountB: TokenAmount) {
