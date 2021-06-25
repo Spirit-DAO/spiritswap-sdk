@@ -7,6 +7,7 @@ export declare class Pair {
     private readonly tokenAmounts;
     static getAddress(tokenA: Token, tokenB: Token): string;
     static getSpookyAddress(tokenA: Token, tokenB: Token): string;
+    static getSushiAddress(tokenA: Token, tokenB: Token): string;
     constructor(tokenAmountA: TokenAmount, tokenAmountB: TokenAmount);
     /**
      * Returns true if the token is either token0 or token1

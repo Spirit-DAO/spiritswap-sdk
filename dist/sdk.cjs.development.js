@@ -39,6 +39,8 @@ var FACTORY_ADDRESS = '0xEF45d134b73241eDa7703fa787148D9C9F4950b0';
 var INIT_CODE_HASH = '0xe242e798f6cee26a9cb0bbf24653bf066e5356ffeac160907fe2cc108e238617';
 var SPOOKY_FACTORY_ADDRESS = '0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3';
 var SPOOKY_INIT_CODE_HASH = '0xcdf2deca40a0bd56de8e3ce5c7df6727e5b1bf2ac96f283fa9c4b3e6b42ea9d2';
+var SUSHI_FACTORY_ADDRESS = "0xc35DADB65012eC5796536bD9864eD8773aBc74C4";
+var SUSHI_INIT_CODE_HASH = "0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303";
 var MINIMUM_LIQUIDITY = /*#__PURE__*/JSBI.BigInt(1000); // exports for internal consumption
 
 var ZERO = /*#__PURE__*/JSBI.BigInt(0);
@@ -757,6 +759,7 @@ var Price = /*#__PURE__*/function (_Fraction) {
 
 var PAIR_ADDRESS_CACHE = {};
 var SPOOKY_PAIR_ADDRESS_CACHE = {};
+var SUSHI_PAIR_ADDRESS_CACHE = {};
 var Pair = /*#__PURE__*/function () {
   function Pair(tokenAmountA, tokenAmountB) {
     var tokenAmounts = tokenAmountA.token.sortsBefore(tokenAmountB.token) // does safety checks
@@ -791,6 +794,20 @@ var Pair = /*#__PURE__*/function () {
     }
 
     return SPOOKY_PAIR_ADDRESS_CACHE[tokens[0].address][tokens[1].address];
+  };
+
+  Pair.getSushiAddress = function getSushiAddress(tokenA, tokenB) {
+    var _SUSHI_PAIR_ADDRESS_C, _SUSHI_PAIR_ADDRESS_C2;
+
+    var tokens = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]; // does safety checks
+
+    if (((_SUSHI_PAIR_ADDRESS_C = SUSHI_PAIR_ADDRESS_CACHE) === null || _SUSHI_PAIR_ADDRESS_C === void 0 ? void 0 : (_SUSHI_PAIR_ADDRESS_C2 = _SUSHI_PAIR_ADDRESS_C[tokens[0].address]) === null || _SUSHI_PAIR_ADDRESS_C2 === void 0 ? void 0 : _SUSHI_PAIR_ADDRESS_C2[tokens[1].address]) === undefined) {
+      var _SUSHI_PAIR_ADDRESS_C3, _extends6, _extends7;
+
+      SUSHI_PAIR_ADDRESS_CACHE = _extends({}, SUSHI_PAIR_ADDRESS_CACHE, (_extends7 = {}, _extends7[tokens[0].address] = _extends({}, (_SUSHI_PAIR_ADDRESS_C3 = SUSHI_PAIR_ADDRESS_CACHE) === null || _SUSHI_PAIR_ADDRESS_C3 === void 0 ? void 0 : _SUSHI_PAIR_ADDRESS_C3[tokens[0].address], (_extends6 = {}, _extends6[tokens[1].address] = address.getCreate2Address(SUSHI_FACTORY_ADDRESS, solidity.keccak256(['bytes'], [solidity.pack(['address', 'address'], [tokens[0].address, tokens[1].address])]), SUSHI_INIT_CODE_HASH), _extends6)), _extends7));
+    }
+
+    return SUSHI_PAIR_ADDRESS_CACHE[tokens[0].address][tokens[1].address];
   }
   /**
    * Returns true if the token is either token0 or token1
